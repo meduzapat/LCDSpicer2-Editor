@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8" />
+	<title>LCDSpicer2 Editor</title>
+	<link rel="stylesheet" href="Libs/jquery-ui/jquery-ui.min.css" />
+	<script src="Libs/jquery.min.js"></script>
+	<script src="Libs/jquery-ui/jquery-ui.min.js"></script>
+	<link rel="stylesheet" href="main.css" />
+	<script src="dataTypes.js"></script>
+	<script src="helpers.js"></script>
+	<script src="dialogs.js"></script>
+	<script src="main.js"></script>
+	<!-- TODO replace this with conf data -->
+	<script src="/tmp/LCDSpicer2/detected.js"></script>
+</head>
+<body>
+	<form>
+	<header>
+		<h3>LCDSpicer 2 Editor</h3>
+		<ul id="messagesDisplay"></ul>
+		<img id="optionsButton" title="Options" alt="Menu" src="Pictures/Icons/options.svg" />
+		<ul id="mainMenu">
+			<li id="new"><span class="ui-icon ui-icon-document"></span>New</li>
+			<li id="open"><span class="ui-icon ui-icon-folder-open"></span>Open</li>
+			<li id="saveAs"><span class="ui-icon ui-icon-disk"></span>Save As</li>
+			<li id="settings"><span class="ui-icon ui-icon-gear"></span>Settings</li>
+			<li id="about"><span class="ui-icon ui-icon-info"></span>About</li>
+		</ul>
+	</header>
+	<section id="outputEditor">
+		<fieldset>
+			<legend>Output Editor</legend>
+			<div class="formElement">
+				<label for="output">Output</label><select id="output"></select>
+			</div>
+			<div class="formElement">
+				<label for="rotation">Screen rotation</label><select id="rotation"></select>
+			</div>
+			<div class="formElement">
+				<label for="rotationReverse">Reverse</label><input type="checkbox" value="1" id="rotationReverse"/>
+			</div>
+			<div id="screenPreview"></div>
+		</fieldset>
+	</section>
+	<section id="screenEditor">
+		<fieldset>
+			<legend>Screen Editor</legend>
+			<button id="addScreen" title="Add a new screen" type="button"><img alt="[+]" src="Pictures/Icons/plusGreen.svg" /></button>
+			<div class="formElement">
+				<label for="screenName">Screen name</label><input id="screenName" type="text" spellcheck="false" title="A human readable name for this screen."/>
+			</div>
+			<div class="formElement">
+				<label for="screenDuration">Duration</label><input id="screenDuration" type="number" min="1" required="required" value="10" step="1" title="The number of seconds this screen will be " /><span id="screenDurationTime" class="input">Disabled</span>
+			</div>
+			<ul id="outputScreens"></ul>
+			<dl class="legend">
+				<dt class="counter">0</dt><dd>Screens</dd>
+				<dt class="selected"></dt><dd>Selected Screen</dd>
+				<dt class="normal"></dt><dd>Normal Screens</dd>
+			</dl>
+		</fieldset>
+	</section>
+	<section id="widgetEditor">
+		<fieldset>
+			<legend>Widget Editor</legend>
+			<button id="addWidget" title="Add a new widget" type="button"><img alt="[+]" src="Pictures/Icons/plusGreen.svg" /></button>
+			<div class="formElement">
+				<label for="widgetName">Widget name</label><input id="widgetName" name="Name" type="text" title="A human readable name for this widget." /><button title="Autogenerate the widget name based on the parameters." id="generateWidgetName" type="button"><img alt="" src="Pictures/Icons/magicWand.svg" /></button>
+			</div>
+			<div class="formElement">
+				<label for="widgetType">Type</label><select id="widgetType" name="Type"></select>
+			</div>
+			<fieldset>
+				<legend>Position</legend>
+				<label for="widgetX">X</label><input id="widgetX" name="X" type="number" min="1" value="1" title="The X coordinate where the widget is located on the screen." />
+				<label for="widgetY">Y</label><input id="widgetY" name="Y" type="number" min="1" value="1" title="The Y coordinate where the widget is located on the screen." />
+			</fieldset>
+			<fieldset>
+				<legend>Dimension</legend>
+				<label for="widgetW">Width</label><input id="widgetW" name="Width" type="number" min="1" value="1" title="The width of this widget." />
+				<label for="widgetH">Height</label><input id="widgetH" name="Height" type="number" min="1" value="1" title="The Height of this widget." />
+			</fieldset>
+			<div class="formElement">
+				<label for="widgetRefresh">Refresh</label><input type="number" name="Refresh" id="widgetRefresh" value="0" min="0" /><span id="widgetRefreshTime" class="input">Disabled</span>
+			</div>
+			<fieldset>
+				<legend>Data Input</legend>
+				<div class="formElement"><label for="inputPicker">Select Input</label><button id="inputPicker" type="button" title="Click here to select an input source."><img alt="[select]" src="Pictures/Icons/dialog.svg" /></button></div>
+				<div class="formElement"><label>Plugin</label><span id="widgetPlugin" class="input"></span></div>
+				<div class="formElement"><label>Data Source</label><span id="widgetSourceLabel" class="input"></span></div>
+				<div class="formElement"><label for="widgetElement">Element</label><select id="widgetElement" disabled="disabled"></select></div>
+				<div class="formElement hidden"><label for="widgetData">Custom Entry</label><input id="widgetData" name="Data" type="text" value="" /></div>
+				<div class="formElement"><label for="widgetUnit">Unit</label><select id="widgetUnit" disabled="disabled"></select></div>
+			</fieldset>
+			<fieldset id="outputOptions" class="hidden">
+			</fieldset>
+			<ul id="screenWidgets"></ul>
+			<dl class="legend">
+				<dt class="counter">0</dt><dd>Widgets</dd>
+				<dt class="selected"></dt><dd>Selected Widget</dd>
+				<dt class="normal"></dt><dd>Normal Widgets</dd>
+			</dl>
+		</fieldset>
+	</section>
+	<section>
+		<fieldset id="screensContainer">
+			<legend>Screens</legend>
+			<ul id="screens"></ul>
+			<dl class="legend">
+				<dt class="counter">0</dt><dd>Screens</dd>
+				<dt class="selected"></dt><dd>Screens in current output</dd>
+				<dt class="normal"></dt><dd>Used Screens</dd>
+				<dt class="unUsed"></dt><dd>Not used Screens</dd>
+			</dl>
+		</fieldset>
+	</section>
+	<section>
+		<fieldset id="widgetsContainer">
+			<legend>Widgets</legend>
+			<ul id="widgets"></ul>
+			<dl class="legend">
+				<dt class="counter">0</dt><dd>Widgets</dd>
+				<dt class="selected"></dt><dd>Widgets in current screen</dd>
+				<dt class="normal"></dt><dd>Used Widgets</dd>
+				<dt class="unUsed"></dt><dd>Not used Widgets</dd>
+			</dl>
+		</fieldset>
+	</section>
+	<input type="file" id="fileLoader" accept="text/xml" style="display:none" />
+	<div id="unSaved">
+		<img alt="?" src="Pictures/Icons/queestionMark.svg" />
+		<p>The changes are not saved, are you sure you want to continue without saving?</p>
+		<cite>Any unsaved content will be lost.</cite>
+	</div>
+	<div id="inputDialog">
+		<div id="tabs">
+			<ul></ul>
+		</div>
+	</div>
+	<div id="detectMissingDialog">
+		<img alt="?" src="Pictures/Icons/queestionMark.svg" />
+		<p>Detect.js file is missing, please run LCDSpicer 2 in detect mode and start over.</p>
+	</div>
+	<div id="aboutDialog">
+	
+		<address>
+			<a href=""></a>
+		</address>
+		<p>2014-2016 ® blah blah <a href="mailto:meduza@netscape.net">Patricio Rossi (meduza)</a>.</p>
+		<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+	</div>
+</form>
+</body>
+</html>
